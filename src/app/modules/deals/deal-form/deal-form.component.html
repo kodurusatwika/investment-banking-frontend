@@ -1,0 +1,104 @@
+<div class="deal-form-container">
+
+  <!-- Header -->
+  <div class="form-header">
+    <h2>{{ isEditMode ? 'Edit Deal' : 'Create New Deal' }}</h2>
+    <button mat-button routerLink="/deals">
+      <mat-icon>arrow_back</mat-icon>
+      Cancel
+    </button>
+  </div>
+
+  <!-- Loading -->
+  <div *ngIf="loading" class="loading-overlay">
+    <mat-spinner></mat-spinner>
+  </div>
+
+  <!-- Form -->
+  <form [formGroup]="dealForm" (ngSubmit)="onSubmit()">
+
+    <div class="form-grid">
+
+      <!-- Client Name -->
+      <mat-form-field appearance="outline" class="full-width">
+        <mat-label>Client Name</mat-label>
+        <input matInput formControlName="clientName">
+        <mat-error *ngIf="dealForm.get('clientName')?.invalid">
+          Client name is required
+        </mat-error>
+      </mat-form-field>
+
+      <!-- Deal Type -->
+      <mat-form-field appearance="outline" class="full-width">
+        <mat-label>Deal Type</mat-label>
+        <mat-select formControlName="dealType">
+          <mat-option *ngFor="let type of dealTypes" [value]="type">
+            {{ type }}
+          </mat-option>
+        </mat-select>
+        <mat-error *ngIf="dealForm.get('dealType')?.invalid">
+          Deal type is required
+        </mat-error>
+      </mat-form-field>
+
+      <!-- Sector -->
+      <mat-form-field appearance="outline" class="full-width">
+        <mat-label>Sector</mat-label>
+        <input matInput formControlName="sector">
+        <mat-error *ngIf="dealForm.get('sector')?.invalid">
+          Sector is required
+        </mat-error>
+      </mat-form-field>
+
+      <!-- Deal Stage -->
+      <mat-form-field appearance="outline" class="full-width">
+        <mat-label>Stage</mat-label>
+        <mat-select formControlName="currentStage">
+          <mat-option *ngFor="let stage of dealStages" [value]="stage">
+            {{ stage }}
+          </mat-option>
+        </mat-select>
+        <mat-error *ngIf="dealForm.get('currentStage')?.invalid">
+          Stage is required
+        </mat-error>
+      </mat-form-field>
+
+      <!-- Assigned User -->
+      <mat-form-field appearance="outline" class="full-width">
+        <mat-label>Assigned To</mat-label>
+        <mat-select formControlName="assignedToId">
+          <mat-option *ngFor="let user of users" [value]="user.id">
+            {{ user.username }} ({{ user.role }})
+          </mat-option>
+        </mat-select>
+        <mat-error *ngIf="dealForm.get('assignedToId')?.invalid">
+          Assigned user is required
+        </mat-error>
+      </mat-form-field>
+
+    </div>
+
+    <!-- Summary -->
+    <mat-form-field appearance="outline" class="full-width">
+      <mat-label>Summary</mat-label>
+      <textarea matInput rows="4" formControlName="summary"></textarea>
+    </mat-form-field>
+
+    <!-- Actions -->
+    <div class="form-actions">
+      <button mat-button type="button" routerLink="/deals">
+        Cancel
+      </button>
+
+      <button
+        mat-raised-button
+        color="primary"
+        type="submit"
+        [disabled]="dealForm.invalid || loading">
+        {{ isEditMode ? 'Update Deal' : 'Create Deal' }}
+      </button>
+    </div>
+
+  </form>
+
+</div>

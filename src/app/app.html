@@ -1,0 +1,29 @@
+<mat-toolbar color="primary">
+  <span>Investment Banking</span>
+  
+  <span class="spacer"></span>
+  
+  <nav *ngIf="currentUser">
+    <button mat-button routerLink="/deals" 
+            [class.active]="isActiveRoute('/deals')">
+      Deals
+    </button>
+    
+    <button *ngIf="currentUser.role === 'ADMIN'" 
+            mat-button routerLink="/admin/users"
+            [class.active]="isActiveRoute('/admin/users')">
+      User Management
+    </button>
+  </nav>
+  
+  <span class="spacer"></span>
+  
+  <div *ngIf="currentUser" class="user-info">
+    <span>{{ currentUser.username }} ({{ currentUser.role }})</span>
+    <button mat-button (click)="logout()">Logout</button>
+  </div>
+</mat-toolbar>
+
+<main>
+  <router-outlet></router-outlet>
+</main>

@@ -1,0 +1,194 @@
+document: 
+Investment Banking Deal Pipeline Management
+
+Investment banking teams handle multiple high-value deals simultaneously, each moving through complex stages (prospect → evaluation → closure).
+However, small and mid-sized banks still rely on spreadsheets, emails, and disconnected tools to manage this pipeline.
+
+This creates several critical business problems: like
+Deal information is scattered across Excel sheets, emails, and chats
+Multiple people editing different versions of spreadsheets
+Sensitive information like deal value is visible to everyone
+Notes and discussions live in emails or chat tools
+Shared spreadsheets = shared access
+
+so for this reason
+
+The business needs a secure, centralized, role-based Deal Pipeline Management Portal that:
+
+1 Centralizes all deal data
+2 Enforces role-based access (USER vs ADMIN)
+3 Protects sensitive financial information
+4 Tracks full deal lifecycle with visibility
+5 Enables structured collaboration via notes
+6 Scales with team and deal growth
+7 Meets modern security and compliance expectations
+
+It’s a secure, web-based system that lets investment bankers track, manage, and collaborate on deals efficiently while ensuring data security and role-based access.
+
+//backend configurations :
+Java 17
+Spring Boot
+Spring Security + JWT
+Spring Data JPA (Hibernate)
+
+MySQL
+Lombok
+Maven
+
+//frontend configurations :
+Layer	Technology
+Framework	Angular 17
+UI Library	Angular Material
+State Management	
+HTTP	HttpClientModule
+Forms	Reactive Forms
+Routing	Angular Router
+Styling	CSS / Angular Material Themes
+Interceptors	JWT Interceptor
+Backend Communication	REST API
+
+
+//architecture
+
+┌─────────────────────────────────────────────────────────────┐
+│                    CLIENT LAYER (Browser)                    │
+│                     localhost:4200                           │
+├─────────────────────────────────────────────────────────────┤
+│                                                             │
+│   ┌─────────────────────────────────────────────────────┐   │
+│   │               ANGULAR 21 FRONTEND                   │   │
+│   │    Single Page Application (SPA)                   │   │
+│   │  ┌─────────────────────────────────────────────┐   │   │
+│   │  │           COMPONENTS & MODULES              │   │   │
+│   │  │  ┌──────┐  ┌──────┐  ┌──────┐  ┌──────┐    │   │   │
+│   │  │  │Login │  │Deals │  │Admin │  │Shared│    │   │   │
+│   │  │  └──┬───┘  └──┬───┘  └──┬───┘  └──┬───┘    │   │   │
+│   │  │     │         │         │         │        │   │   │
+│   │  │  ┌──▼─────────▼─────────▼─────────▼──┐     │   │   │
+│   │  │  │      SERVICES & INTERCEPTORS      │     │   │   │
+│   │  │  │  • Auth Service (JWT)             │     │   │   │
+│   │  │  │  • Deal Service (HTTP Calls)      │     │   │   │
+│   │  │  │  • Auth Interceptor               │     │   │   │
+│   │  │  └────────────────┬──────────────────┘     │   │   │
+│   │  └───────────────────┼────────────────────────┘   │   │
+│   └──────────────────────┼────────────────────────────┘   │
+│                          │ HTTP/HTTPS                     │
+│                          │ REST API Calls                 │
+│                          │ with JWT Bearer Token          │
+└──────────────────────────┼─────────────────────────────────┘
+                           │
+                           ▼
+┌─────────────────────────────────────────────────────────────┐
+│                    SERVER LAYER                             │
+│                    localhost:8080                           │
+├─────────────────────────────────────────────────────────────┤
+│                                                             │
+│   ┌─────────────────────────────────────────────────────┐   │
+│   │              SPRING BOOT BACKEND                    │   │
+│   │        RESTful Web Services                         │   │
+│   │  ┌─────────────────────────────────────────────┐   │   │
+│   │  │           SPRING SECURITY FILTER            │   │   │
+│   │  │  • JWT Authentication                       │   │   │
+│   │  │  • CORS Configuration                       │   │   │
+│   │  │  • Role-based Authorization                 │   │   │
+│   │  └─────────────────┬───────────────────────────┘   │   │
+│   │                    │                                │   │
+│   │  ┌─────────────────▼───────────────────────────┐   │   │
+│   │  │             REST CONTROLLERS                 │   │   │
+│   │  │  ┌──────┐  ┌──────┐  ┌──────┐               │   │   │
+│   │  │  │Auth  │  │Deal  │  │Admin │               │   │   │
+│   │  │  │Ctrl  │  │Ctrl  │  │Ctrl  │               │   │   │
+│   │  │  └──┬───┘  └──┬───┘  └──┬───┘               │   │   │
+│   │  │     │         │         │                   │   │   │
+│   │  │  ┌──▼─────────▼─────────▼──┐                │   │   │
+│   │  │  │      SERVICE LAYER      │                │   │   │
+│   │  │  │  • Business Logic       │                │   │   │
+│   │  │  │  • Validations          │                │   │   │
+│   │  │  │  • Transaction Mgmt     │                │   │   │
+│   │  │  └─────────────────────────┘                │   │   │
+│   │  │                    │                         │   │   │
+│   │  │  ┌─────────────────▼──────────────────┐     │   │   │
+│   │  │  │         REPOSITORY LAYER           │     │   │   │
+│   │  │  │  • JPA Repositories               │     │   │   │
+│   │  │  │  • Database Abstraction           │     │   │   │
+│   │  │  └───────────────────────────────────┘     │   │   │
+│   │  └─────────────────────────────────────────────┘   │   │
+│   └───────────────────────┬─────────────────────────────┘   │
+│                           │ JDBC                            │
+│                           │ Hibernate JPA                   │
+└───────────────────────────┼─────────────────────────────────┘
+                           │
+                           ▼
+┌─────────────────────────────────────────────────────────────┐
+│                    DATA LAYER                               │
+│                    localhost:3306                           │
+├─────────────────────────────────────────────────────────────┤
+│                                                             │
+│   ┌─────────────────────────────────────────────────────┐   │
+│   │                 MySQL DATABASE                      │   │
+│   │           Relational Database                       │   │
+│   │  ┌─────────────────────────────────────────────┐   │   │
+│   │  │               TABLES                         │   │   │
+│   │  │  ┌─────────────────────────────────────┐   │   │   │
+│   │  │  │          USERS TABLE                 │   │   │   │
+│   │  │  │  id | username | password | role     │   │   │   │
+│   │  │  └─────────────────────────────────────┘   │   │   │
+│   │  │                     │                       │   │   │
+│   │  │  ┌─────────────────▼─────────────────┐     │   │   │
+│   │  │  │          DEALS TABLE               │     │   │   │
+│   │  │  │ id | client_name | stage | value  │     │   │   │
+│   │  │  └───────────────────────────────────┘     │   │   │
+│   │  │                     │                       │   │   │
+│   │  │  ┌─────────────────▼─────────────────┐     │   │   │
+│   │  │  │          NOTES TABLE               │     │   │   │
+│   │  │  │ id | deal_id | user_id | note     │     │   │   │
+│   │  │  └───────────────────────────────────┘     │   │   │
+│   │  └─────────────────────────────────────────────┘   │   │
+│   └─────────────────────────────────────────────────────┘   │
+└─────────────────────────────────────────────────────────────┘
+
+
+//flow
+
+┌─────────┐   1. Access App    ┌───────────┐   2. Login Request   ┌───────────┐
+│  USER   │───────────────────▶│   ANGULAR │─────────────────────▶│ SPRING BOOT│
+└─────────┘   localhost:4200   │ FRONTEND  │   POST /api/auth/login│  BACKEND  │
+                                └───────────┘                      └─────┬─────┘
+         │                                                              │ 3. Validate
+         │                                                              │    Credentials
+         │ 8. Display Deals                                             ▼
+         └────────────────────────────────────────────────────┌───────────┐
+         │                                                    │  MYSQL    │
+         │                                                    │  Check    │
+         │                                                    │  users table
+         │ 7. Render UI                                      └─────┬─────┘
+         └─────────────────────────────────────────────────────────│
+         │                                                         │ 4. Generate
+         │ 6. Store JWT                                            │    JWT Token
+         └─────────────────────────────────────────────────────────│
+         │                                                         ▼
+         │                                                    ┌───────────┐
+         │ 5. Return Token                                    │Return JWT │
+         └────────────────────────────────────────────────────│ + User Data│
+                                                              └───────────
+
+
+
+                    //security flow 
+
+┌─────────────────┐         ┌─────────────────┐         ┌─────────────────┐
+│   CLIENT        │         │   API GATEWAY   │         │   DATABASE      │
+│   (Angular)     │         │   (Spring Boot) │         │   (MySQL)       │
+├─────────────────┤         ├─────────────────┤         ├─────────────────┤
+│ 1. Login Request│───────▶│ 2. Authenticate  │───────▶│ 3. Verify User  │
+│   username/pwd  │         │   Check DB      │         │   Credentials   │
+│                 │         │                 │         │                 │
+│ 7. Store JWT    │◀───────│ 6. Return JWT    │◀───────│ 5. User Valid   │
+│   in localStorage│         │   Token         │         │                 │
+│                 │         │                 │         │                 │
+│ 8. API Call with│───────▶│ 9. Validate JWT  │         │                 │
+│   JWT in Header │         │   Token         │         │                 │
+│                 │         │                 │         │                 │
+│ 12. Show Data   │◀───────│ 11. Process      │◀───────│ 10. Fetch Data  │
+│                 │         │   Request        │         │   from Tables   │
+└─────────────────┘         └─────────────────┘         └─────────────────┘

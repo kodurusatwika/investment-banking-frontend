@@ -1,0 +1,126 @@
+<div class="deal-list-container">
+  <div class="header">
+    <h2>Deal Pipeline</h2>
+    <button mat-raised-button color="primary" routerLink="/deals/create">
+      <mat-icon>add</mat-icon> Create New Deal
+    </button>
+  </div>
+  
+  <mat-card class="filter-card">
+    <mat-card-content>
+      <div class="filter-grid">
+        <mat-form-field appearance="outline">
+          <mat-label>Client Name</mat-label>
+          <input matInput [(ngModel)]="filters.clientName" (keyup.enter)="applyFilters()">
+        </mat-form-field>
+        
+        <mat-form-field appearance="outline">
+          <mat-label>Deal Type</mat-label>
+          <mat-select [(ngModel)]="filters.dealType">
+            <mat-option value="">All</mat-option>
+            <mat-option *ngFor="let type of dealTypes" [value]="type">
+              {{ getDealTypeDisplay(type) }}
+            </mat-option>
+          </mat-select>
+        </mat-form-field>
+        
+        <mat-form-field appearance="outline">
+          <mat-label>Sector</mat-label>
+          <input matInput [(ngModel)]="filters.sector" (keyup.enter)="applyFilters()">
+        </mat-form-field>
+        
+        <mat-form-field appearance="outline">
+          <mat-label>Stage</mat-label>
+          <mat-select [(ngModel)]="filters.stage">
+            <mat-option value="">All</mat-option>
+            <mat-option *ngFor="let stage of dealStages" [value]="stage">
+              {{ getStageDisplay(stage) }}
+            </mat-option>
+          </mat-select>
+        </mat-form-field>
+      </div>
+      
+      <div class="filter-actions">
+        <button mat-button (click)="resetFilters()">Reset</button>
+        <button mat-raised-button color="primary" (click)="applyFilters()">Apply Filters</button>
+      </div>
+    </mat-card-content>
+  </mat-card>
+  
+  <div *ngIf="loading" class="loading-spinner">
+    <mat-spinner></mat-spinner>
+  </div>
+  
+  <div *ngIf="!loading && deals.length === 0" class="no-data">
+    <mat-icon>info</mat-icon>
+    <p>No deals found. Create your first deal!</p>
+  </div>
+  
+  <div *ngIf="!loading && deals.length > 0" class="deals-grid">
+    <div *ngFor="let deal of deals" class="deal-card">
+      <mat-card>
+        <mat-card-header>
+          <mat-card-title>{{ deal.clientName }}</mat-card-title>
+          <mat-card-subtitle>{{ getDealTypeDisplay(deal.dealType) }} - {{ deal.sector }}</mat-card-subtitle>
+        </mat-card-header>
+        
+        <mat-card-content>
+          <div class="deal-info">
+            <div class="info-row">
+              <span class="label">Stage:</span>
+              <mat-chip [color]="getStageColor(deal.currentStage)" selected>
+                {{ getStageDisplay(deal.currentStage) }}
+              </mat-chip>
+            </div>
+            
+            <div class="info-row">
+              <span class="label">Assigned To:</span>
+              <span>{{ deal.assignedTo.username }}</span>
+            </div>
+            
+            <div class="info-row">
+              <span class="label">Created:</span>
+              <span>{{ deal.createdAt | date:'medium' }}</span>
+            </div>
+            
+            <div *ngIf="isAdmin && deal.dealValue" class="info-row">
+              <span class="label">Value:</span>
+              <span>${{ deal.dealValue | number }}</span>
+            </div>
+            
+            <div *ngIf="deal.summary" class="summary">
+              <p>{{ deal.summary }}</p>
+            </div>
+          </div>
+        </mat-card-content>
+        
+        <mat-card-actions>
+          <button mat-button (click)="viewDeal(deal.id)">
+            <mat-icon>visibility</mat-icon> View
+          </button>
+          
+          <button mat-button (click)="editDeal(deal.id)">
+            <mat-icon>edit</mat-icon> Edit
+          </button>
+          
+          <button mat-button (click)="openAddNoteDialog(deal)">
+            <mat-icon>note_add</mat-icon> Add Note
+          </button>
+          
+          <mat-form-field *ngIf="isAdmin" class="stage-select">
+            <mat-label>Update Stage</mat-label>
+            <mat-select (selectionChange)="updateStage(deal, $event.value)">
+              <mat-option *ngFor="let stage of dealStages" [value]="stage">
+                {{ getStageDisplay(stage) }}
+              </mat-option>
+            </mat-select>
+          </mat-form-field>
+          
+          <button *ngIf="isAdmin" mat-button color="warn" (click)="deleteDeal(deal.id)">
+            <mat-icon>delete</mat-icon> Delete
+          </button>
+        </mat-card-actions>
+      </mat-card>
+    </div>
+  </div>
+</div>

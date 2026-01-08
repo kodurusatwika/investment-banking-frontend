@@ -1,0 +1,122 @@
+<div class="deal-details-container">
+  <div class="header">
+    <h2>Deal Details</h2>
+    <button mat-button routerLink="/deals">
+      <mat-icon>arrow_back</mat-icon> Back to Deals
+    </button>
+  </div>
+
+  <div *ngIf="loading" class="loading-spinner">
+    <mat-spinner></mat-spinner>
+  </div>
+
+  <div *ngIf="!loading && deal" class="deal-content">
+    <div class="main-section">
+      <div class="deal-header">
+        <div class="deal-title">
+          <h1>{{ deal.clientName }}</h1>
+          <mat-chip [color]="getStageColor(deal.currentStage)" selected>
+            {{ getStageDisplay(deal.currentStage) }}
+          </mat-chip>
+        </div>
+        
+        <div class="deal-meta">
+          <div class="meta-item">
+            <span class="meta-label">Deal Type</span>
+            <span class="meta-value">{{ getDealTypeDisplay(deal.dealType) }}</span>
+          </div>
+          
+          <div class="meta-item">
+            <span class="meta-label">Sector</span>
+            <span class="meta-value">{{ deal.sector }}</span>
+          </div>
+          
+          <div class="meta-item">
+            <span class="meta-label">Created By</span>
+            <span class="meta-value">{{ deal.createdBy.username }}</span>
+          </div>
+          
+          <div class="meta-item">
+            <span class="meta-label">Assigned To</span>
+            <span class="meta-value">{{ deal.assignedTo.username }}</span>
+          </div>
+          
+          <div class="meta-item">
+            <span class="meta-label">Created</span>
+            <span class="meta-value">{{ deal.createdAt | date:'medium' }}</span>
+          </div>
+          
+          <div class="meta-item">
+            <span class="meta-label">Last Updated</span>
+            <span class="meta-value">{{ deal.updatedAt | date:'medium' }}</span>
+          </div>
+        </div>
+      </div>
+
+      <div class="summary-section" *ngIf="deal.summary">
+        <h3>Summary</h3>
+        <p>{{ deal.summary }}</p>
+      </div>
+
+      <div class="notes-section">
+        <div class="section-header">
+          <h3>Notes</h3>
+          <button mat-raised-button color="primary" (click)="openAddNoteDialog()">
+            <mat-icon>add</mat-icon> Add Note
+          </button>
+        </div>
+        
+        <div *ngIf="deal.notes.length === 0" class="no-notes">
+          <mat-icon>notes</mat-icon>
+          <p>No notes yet. Add the first note!</p>
+        </div>
+        
+        <div *ngIf="deal.notes.length > 0" class="note-list">
+          <div *ngFor="let note of deal.notes" class="note-item">
+            <div class="note-header">
+              <span class="note-user">{{ note.user.username }}</span>
+              <span class="note-time">{{ note.timestamp | date:'medium' }}</span>
+            </div>
+            <div class="note-content">{{ note.note }}</div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <div class="sidebar">
+      <div class="actions-section">
+        <h3>Actions</h3>
+        
+        <button mat-raised-button color="primary" [routerLink]="['/deals/edit', deal.id]">
+          <mat-icon>edit</mat-icon> Edit Deal
+        </button>
+        
+        <button mat-raised-button color="primary" (click)="openAddNoteDialog()">
+          <mat-icon>note_add</mat-icon> Add Note
+        </button>
+        
+        <mat-form-field appearance="outline" class="full-width">
+          <mat-label>Update Stage</mat-label>
+          <mat-select (selectionChange)="updateStage($event.value)" [value]="deal.currentStage">
+            <mat-option *ngFor="let stage of dealStages" [value]="stage">
+              {{ getStageDisplay(stage) }}
+            </mat-option>
+          </mat-select>
+        </mat-form-field>
+        
+        <div *ngIf="isAdmin" class="admin-actions">
+          <h3>Admin Actions</h3>
+          
+          <div class="deal-value-section">
+            <p><strong>Deal Value:</strong> 
+              {{ deal.dealValue ? ('$' + (deal.dealValue | number)) : 'Not set' }}
+            </p>
+            <button mat-raised-button color="accent" (click)="updateValue()">
+              <mat-icon>attach_money</mat-icon> Update Value
+            </button>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>

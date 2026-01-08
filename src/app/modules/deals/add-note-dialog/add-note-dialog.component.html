@@ -1,0 +1,32 @@
+<h2 mat-dialog-title>Add Note</h2>
+
+<mat-dialog-content>
+  <form [formGroup]="noteForm">
+    <mat-form-field appearance="outline" class="full-width">
+      <mat-label>Note</mat-label>
+      <textarea 
+        matInput 
+        formControlName="note" 
+        rows="4"
+        placeholder="Enter your note here...">
+      </textarea>
+      <mat-error *ngIf="noteForm.get('note')?.hasError('required')">
+        Note is required
+      </mat-error>
+      <mat-error *ngIf="noteForm.get('note')?.hasError('minlength')">
+        Note must be at least 3 characters long
+      </mat-error>
+    </mat-form-field>
+  </form>
+</mat-dialog-content>
+
+<mat-dialog-actions align="end">
+  <button mat-button (click)="onCancel()">Cancel</button>
+  <button 
+    mat-raised-button 
+    color="primary" 
+    (click)="onSubmit()"
+    [disabled]="noteForm.invalid">
+    Add Note
+  </button>
+</mat-dialog-actions>

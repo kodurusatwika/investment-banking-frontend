@@ -1,0 +1,12 @@
+Admin Accounts:
+1. Username: admin       Password: admin123
+2. Username: bob.wilson  Password: password
+
+User Accounts:
+1. Username: john.doe    Password: user123
+2. Username: jane.smith  Password: password
+
+
+Inactive user:
+
+Username: sarah.jones    Password: password (Account is deactivated)
